@@ -1,62 +1,46 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.RightsManagement;
+using System.Linq;
 using System.Text;
+using System.Windows.Annotations;
 
 namespace WeightedRandom.core
 {
-    public class Project : IEnumerable<KeyValuePair<string, double>>
+    public class Project
     {
-        private IDictionary<string, double> entries;
+        private IDictionary<string, Table> entries;
 
         public Project() {
-            entries = new Dictionary<string, double>();
+            entries = new Dictionary<string, Table>();
         }
 
-        public bool HasKey(string key) 
+        public Table GetTable(string name)
         {
-            return entries.ContainsKey(key);
+            return entries[name];
         }
 
-        public void AddKey(string key, double value)
+        public bool IsRegistered(string name) {
+            return entries.ContainsKey(name);
+        }
+
+        public bool IsRegistered(Table table)
         {
-            entries[key] = value;
+            return IsRegistered(table.Name);
         }
 
-        public void RemoveKey(string key)
+        public void RegisterTable(Table table)
         {
-            entries.Remove(key);
+            entries.Add(table.Name, table);
         }
 
-
-        public IEnumerator<KeyValuePair<string, double>> GetEnumerator()
+        public void UnregisterTable(string name)
         {
-            return entries.GetEnumerator();
+            entries.Remove(name);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void UnregisterTable(Table table)
         {
-            return  entries.GetEnumerator();
-        }
-
-
-
-        public double GetTotal() {
-            double tots = 0.0;
-            foreach ((string _, double value) in entries)
-            {
-
-                tots += value;
-            }
-
-            return tots;
-        }
-
-
-        public NormalMap Normalize() { 
-        
-            return new NormalMap(this);
+            entries.Remove(table.Name);
         }
     }
 }

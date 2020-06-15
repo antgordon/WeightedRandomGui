@@ -20,10 +20,10 @@ namespace WeightedRandom.forms
     public partial class ProjectEditPage : Page
     {
 
-        private Project project;
+        private core.Project project;
 
 
-        public ProjectEditPage(Project project)
+        public ProjectEditPage(core.Project project)
         {
             InitializeComponent();
             this.project = project;
@@ -62,10 +62,11 @@ namespace WeightedRandom.forms
 
 
         public void displayTree() {
-            NormalMap map = project.Normalize();
-            foreach ((string key, double val) in project) {
-
-                TreeViewItem item = createTreeViewItem(key, val, map[key]);
+            core.Table table = project.GetTable("one");
+            NormalTable map = table.Normalize(project);
+            foreach ((core.Key key, double val) in map) {
+                double shortVal = table.GetWeight(key.ShortName);
+                TreeViewItem item = createTreeViewItem(key.ShortName, shortVal, val);
                 projectTree.Items.Add(item);
             }
 

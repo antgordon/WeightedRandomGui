@@ -25,13 +25,16 @@ namespace WeightedRandom
         public MainWindow()
         {
             InitializeComponent();
-            Project pj = new Project();
+            Project project = new Project();
+
+            core.Table pj = new core.Table("one");
+            project.RegisterTable(pj);
             pj.AddKey("one", 1.0);
             pj.AddKey("two", 1.0);
             pj.AddKey("three", 1.0);
             pj.AddKey("four", 1.0);
 
-            Page page = new ProjectEditPage(pj);
+            Page page = new ProjectEditPage(project);
             mainFrame.Navigate(page);
         }
     }
