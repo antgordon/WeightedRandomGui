@@ -28,11 +28,33 @@ namespace WeightedRandom
             Project project = new Project();
 
             core.Table pj = new core.Table("one");
-            project.RegisterTable(pj);
+     
             pj.AddKey("one", 1.0);
             pj.AddKey("two", 1.0);
             pj.AddKey("three", 1.0);
             pj.AddKey("four", 1.0);
+
+            core.Table pj2 = new core.Table("test2");
+            pj2.AddKey("apple", 1.0);
+            pj2.AddKey("orange", 1.0);
+            pj2.AddKey("banana", 1.0);
+            pj2.AddKey("peach", 1.0);
+
+
+            core.Table pj3 = new core.Table("test3");
+            pj3.AddKey("Toyota", 0.5);
+            pj3.AddKey("Ford", 5.0);
+            pj3.AddKey("General Motors", 1.0);
+            pj3.AddKey("Honda", 10.0);
+
+
+
+            project.RegisterTable(pj);
+            project.RegisterTable(pj2);
+            project.RegisterTable(pj3); 
+            pj.AddReference("one", "test2");
+            pj2.AddReference("orange", "test3");
+            pj.AddReference("three", "test3");
 
             Page page = new ProjectEditPage(project);
             mainFrame.Navigate(page);

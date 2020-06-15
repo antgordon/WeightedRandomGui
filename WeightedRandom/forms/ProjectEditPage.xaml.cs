@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,16 +22,67 @@ namespace WeightedRandom.forms
     {
 
         private core.Project project;
+        private LinkedList<TreeNode> viewModel;
 
 
         public ProjectEditPage(core.Project project)
         {
             InitializeComponent();
             this.project = project;
-            displayTree();
+            //displayTree();
+            viewModel = new LinkedList<TreeNode>();
+            core.Table selected = project.GetTable("one");
+            NormalTable tabe = selected.Normalize(project);
+            modelTree(project, selected, tabe);
+            displayTreeModel(selected, tabe, viewModel);
 
         }
 
+
+        private void modelTree(Project project, core.Table table, NormalTable normal)
+        {
+            clearModel();
+
+            ICollection<TreeNode> convert = viewModel;
+             foreach ((string name, _) in table) {
+                recursiveModel(project, normal, table, null, name, convert );
+            }
+
+            
+        }
+
+        private void recursiveModel(Project project, NormalTable normal, core.Table currentTable, core.Key parentKey, string name, ICollection<TreeNode> children) {
+
+      
+            core.Key tableKey;
+
+            if (parentKey == null)
+            {
+                tableKey = new core.Key(name);
+            }
+            else {
+                tableKey = new core.Key(name, parentKey);
+            }
+
+            TreeNode node = new TreeNode(tableKey, currentTable);
+            children.Add(node);
+
+            if (currentTable.HasReference(name)) 
+            {
+                string refName = currentTable.GetReference(name);
+                core.Table refTable = project.GetTable(refName);
+
+                foreach ((string namesub, double weight) in refTable)
+                {
+                    recursiveModel(project, normal, refTable, tableKey, namesub, node.Children());
+
+                }
+
+
+
+            }
+         
+         }
         private TreeViewItem createTreeViewItem(string key, double raw, double normal) {
             TreeViewItem treeViewItem = new TreeViewItem();
             StackPanel stackPanel = new StackPanel();
@@ -60,6 +112,32 @@ namespace WeightedRandom.forms
 
         }
 
+        private void displayTreeModel(core.Table table, NormalTable normal, ICollection<TreeNode> nodes)
+        {
+
+            projectTree.Items.Clear();
+            foreach (TreeNode child in nodes)
+            {
+                TreeViewItem viewChild = displayTreeModelRecursive(project, normal, child);
+                projectTree.Items.Add(viewChild);
+            }
+
+
+
+        }
+
+        private TreeViewItem displayTreeModelRecursive(Project project, NormalTable normal, TreeNode node)
+        {
+            TreeViewItem item = createTreeViewItem(node.Name, node.GetRawWeight(), node.GetNormalWeight(normal));
+
+            foreach (TreeNode child in node) {
+                TreeViewItem viewChild = displayTreeModelRecursive(project, normal, child);
+                item.Items.Add(viewChild);
+            }
+
+            return item;
+        }
+
 
         public void displayTree() {
             core.Table table = project.GetTable("one");
@@ -69,6 +147,94 @@ namespace WeightedRandom.forms
                 TreeViewItem item = createTreeViewItem(key.ShortName, shortVal, val);
                 projectTree.Items.Add(item);
             }
+
+        }
+
+
+        private void clearModel() {
+            foreach (TreeNode node in viewModel) {
+                node.ClearChildren();
+            }
+
+            viewModel.Clear();
+
+        }
+
+        class TreeNode : IEnumerable<TreeNode>
+        {
+
+            public string Name { get; } 
+
+            public core.Key TableKey { get; }
+
+            public core.Table TableRef { get; }
+
+            public TreeNode(core.Key key, core.Table tableRef) 
+            {
+                this.TableKey = key;
+                this.TableRef = tableRef;
+                this.Name = key.ShortName;
+                children = new LinkedList<TreeNode>();
+            }
+
+            public double GetNormalWeight(NormalTable table) 
+            {
+                return table[TableKey];
+            }
+
+            public double GetRawWeight()
+            {
+                return TableRef.GetWeight(Name);
+            }
+
+            public bool IsRoot() 
+            {
+                return parent != null;
+            }
+
+
+            public void AddChild(TreeNode node) {
+                children.AddLast(node);
+                node.parent = this;
+            
+            }
+
+            public void RemoveChild(TreeNode node)
+            {
+                children.Remove(node);
+                node.parent = null;
+
+            }
+
+
+            public void ClearChildren() {
+                List < TreeNode > copy = new List<TreeNode>(children);
+
+                foreach (TreeNode node in copy) {
+                    RemoveChild(node);
+                }
+            }
+
+            public ICollection<TreeNode> Children() {
+                return children;
+            }
+
+            public IEnumerator<TreeNode> GetEnumerator()
+            {
+                return children.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return children.GetEnumerator();
+            }
+
+           
+
+
+            private TreeNode parent;
+            private LinkedList<TreeNode> children;
+
 
         }
     }

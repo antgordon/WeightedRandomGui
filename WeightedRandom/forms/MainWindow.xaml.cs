@@ -17,11 +17,11 @@ namespace WeightedRandom.forms
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class _MainWindow : Window
     {
-        public MainWindow()
+        public _MainWindow()
         {
-            InitializeComponent();
+          /*  //InitializeComponent();
             Project project = new Project();
 
             core.Table pj = new core.Table("one");
@@ -34,7 +34,7 @@ namespace WeightedRandom.forms
             Page page = new ProjectEditPage(project);
 
             NavigationService server = NavigationService.GetNavigationService(this);
-            server.Navigate(page);
+            server.Navigate(page);*/
         }
     }
 }

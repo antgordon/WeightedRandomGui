@@ -27,7 +27,7 @@ namespace WeightedRandom.core
                 references.Add(key, table);
             }
             else {
-                throw new ArgumentException("Reference key is not present");
+                throw new ArgumentException("Reference key is not present " + key);
             }
         }
 
@@ -39,7 +39,7 @@ namespace WeightedRandom.core
             }
             else
             {
-                throw new ArgumentException("Reference key is not present");
+                throw new ArgumentException("Reference key is not present " + key);
             }
         }
 
@@ -51,7 +51,7 @@ namespace WeightedRandom.core
             }
             else
             {
-                throw new ArgumentException("Reference key is not present");
+                throw new ArgumentException("Reference key is not present " + key);
             }
         }
 
@@ -64,7 +64,7 @@ namespace WeightedRandom.core
             }
             else
             {
-                throw new ArgumentException("Reference key is not present");
+                throw new ArgumentException("Reference key is not present " + key);
             }
         }
 
