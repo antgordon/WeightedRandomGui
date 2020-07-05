@@ -147,7 +147,7 @@ namespace WeightedRandom.forms
             rawText.Margin = new Thickness(0, 5, 10, 0);
 
             Label normalText = new Label();
-            normalText.Content = Convert.ToString(normal);
+            normalText.Content = $"{normal:P4}";
             normalText.Margin = new Thickness(20, 5, 10, 0);
 
             stackPanel.Children.Add(nameText);
