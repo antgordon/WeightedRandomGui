@@ -23,19 +23,64 @@ namespace WeightedRandom.forms
 
         private core.Project project;
         private LinkedList<TreeNode> viewModel;
+        core.Table selected;
 
 
         public ProjectEditPage(core.Project project)
         {
             InitializeComponent();
             this.project = project;
-            //displayTree();
             viewModel = new LinkedList<TreeNode>();
-            core.Table selected = project.GetTable("one");
-            NormalTable tabe = selected.Normalize(project);
-            modelTree(project, selected, tabe);
-            displayTreeModel(selected, tabe, viewModel);
+            //displayTree();
+            SetTable("one");
+            loadSideButtons();
+    
 
+        }
+
+        private void loadSideButtons() {
+            StackPanel stackPannel = new StackPanel();
+            Grid.SetColumn(stackPannel, 0);
+            Grid.SetRow(stackPannel, 1);
+
+            Grid grid = (Grid)this.Content;
+
+            foreach (core.Table table in project) {
+
+           
+                Button but = CreatButtonForTable(table);
+             
+                stackPannel.Children.Add(but);
+               
+            }
+
+            grid.Children.Add(stackPannel);
+
+
+
+        }
+
+        private Button CreatButtonForTable(core.Table table) {
+            Button button = new Button();
+            button.Name = table.Name;
+            button.Content = table.Name;
+            button.Click += (obj, e) => { SetTable(button.Name);};
+            return button;
+        }
+
+        public void SetTable(string name) {
+            selected = project.GetTable(name);
+
+            if (selected == null)
+            {
+                clearModel();
+
+            }
+            else {
+                NormalTable tabe = selected.Normalize(project);
+                modelTree(project, selected, tabe);
+                displayTreeModel(selected, tabe, viewModel);
+            }
         }
 
 
@@ -83,6 +128,8 @@ namespace WeightedRandom.forms
             }
          
          }
+
+
         private TreeViewItem createTreeViewItem(string key, double raw, double normal) {
             TreeViewItem treeViewItem = new TreeViewItem();
             StackPanel stackPanel = new StackPanel();
@@ -93,6 +140,7 @@ namespace WeightedRandom.forms
             TextBlock nameText = new TextBlock();
             nameText.Text = key;
             nameText.Margin = new Thickness(0, 5, 10, 0);
+          
 
             TextBox rawText = new TextBox();
             rawText.Text = Convert.ToString(raw);

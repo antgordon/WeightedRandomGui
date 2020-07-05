@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Windows.Annotations;
 
 namespace WeightedRandom.core
 {
-    public class Project
+    public class Project: IEnumerable<Table>
     {
         private IDictionary<string, Table> entries;
 
@@ -41,6 +42,18 @@ namespace WeightedRandom.core
         public void UnregisterTable(Table table)
         {
             entries.Remove(table.Name);
+        }
+
+
+        public IEnumerator<Table> GetEnumerator()
+        {
+            return entries.Values.GetEnumerator();
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return entries.Values.GetEnumerator();
         }
     }
 }

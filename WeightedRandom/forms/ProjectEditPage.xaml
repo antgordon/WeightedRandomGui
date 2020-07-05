@@ -9,12 +9,25 @@
       Title="ProjectEditPage">
 
     <Grid>
-        <StackPanel>
-            <Label Content="eeeeeeeeeeeeeee" VerticalAlignment="Top"/>
-                <TreeView x:Name="projectTree">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width ="1*"/>
+            <!-- This column will receive all remaining width -->
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+       
+            <!-- This row will receive all remaining Height -->
+            <RowDefinition Height="15*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="2" Grid.Row="0" Content="Values" VerticalAlignment="Top"/>
+        <StackPanel Grid.Column="2" Grid.Row="2">
+      
+            <TreeView x:Name="projectTree">
            
-                </TreeView>
-            </StackPanel>
+            </TreeView>
+         </StackPanel>
+        <Grid HorizontalAlignment="Left" Height="242" Margin="-20,342,0,0" Grid.Row="1" VerticalAlignment="Top" Width="108"/>
 
     </Grid>
 </Page>
