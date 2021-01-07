@@ -14,6 +14,7 @@ namespace WeightedRandom.core2
         {
             elements = new List<Element>();
             ID = id;
+            Name = name;
         }
 
         public int ID { get; }

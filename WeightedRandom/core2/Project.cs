@@ -9,13 +9,18 @@ namespace WeightedRandom.core2
     {
 
         private IList<Table> tables;
+        public string Name { get; }
+        public IdAllocator Allocator { get; }
+     
 
-        public Project(string name) 
+        public Project(string name, IdAllocator allocator) 
         {
             tables = new List<Table>();
+            this.Allocator = allocator;
+            this.Name = name;
         }
 
-        public string Name { get; set; }
+
 
         public Table GetTable(string name) {
    
@@ -64,6 +69,8 @@ namespace WeightedRandom.core2
 
         }
 
+
+
         public void RemoveTable(int id)
         {
 
@@ -93,11 +100,7 @@ namespace WeightedRandom.core2
                     tables.Remove(tab);
                 }
             }
-
-
         }
-
-
 
 
         public IEnumerator<Table> GetEnumerator()
@@ -116,6 +119,34 @@ namespace WeightedRandom.core2
    
     }
 
+
+    public class IdAllocator { 
+        public int TableId { get; set; }
+        public int ElementId { get; set; }
+
+        public int IncrementTable() {
+            int num = TableId;
+            TableId += 1;
+            return num;
+        }
+
+        public int IncrementElement()
+        {
+            int num = ElementId;
+            ElementId += 1;
+            return num;
+        }
+
+
+        public Table CreateTable(string name) {
+            return new Table(IncrementTable(), name);
+        }
+
+        public Element CreateElement(Table table,string  name, double weight)
+        {
+            return new Element(IncrementElement(), table.ID, name, weight);
+        }
+    }
 
 
 
