@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Windows;
@@ -91,8 +92,8 @@ namespace WeightedRandom.forms
 
         class ViewModel {
 
-            private core2.Table table;
-            private core2.Project project;
+            public core2.Table table;
+            public core2.Project project;
             public IDictionary<int, double> percentages;
             private IList<ViewModelTreeNode> nodes;
             private ItemCollection displayNodes;
@@ -126,10 +127,10 @@ namespace WeightedRandom.forms
             public void AddElement(string name, double weight) {
                 Element element = project.Allocator.CreateElement(table, name, weight);
                 table.AddElement(element);
+                UpdatePercentage();
                 ViewModelTreeNode node = new ViewModelTreeNode(this, element);
                 displayNodes.Add(node.GuiItem);
                 nodes.Add(node);
-                UpdatePercentage();
                 UpdateAll();
 
             }
@@ -191,6 +192,9 @@ namespace WeightedRandom.forms
         }
 
 
+       
+
+
         class ViewModelTreeNode
         {
 
@@ -203,6 +207,7 @@ namespace WeightedRandom.forms
             private TextBox weightBox;
             private Label percentageLabel;
             private StackPanel stackPanel;
+            private IList<ViewModelChild> viewModelChilds;
 
             public ViewModelTreeNode(ViewModel viewmodel, Element element)
             {
@@ -240,6 +245,25 @@ namespace WeightedRandom.forms
 
                 GuiItem = new TreeViewItem();
                 GuiItem.Header = stackPanel;
+
+                viewModelChilds = new List<ViewModelChild>();
+                double percentage = viewmodel.percentages[element.ID];
+                foreach (core2.Table table in viewmodel.project) 
+                {
+
+
+                    Parent par = table.GetParent();
+
+                    if (par != null && par.TableId == viewmodel.table.ID && par.ElementId == element.ID) 
+                    {
+                        ViewModelChild model = new ViewModelChild(viewmodel, par, table);
+                        model.Dispay();
+                        viewModelChilds.Add(model);
+                        GuiItem.Items.Add(model.GetUIElement());
+                    }
+           
+                }
+
 
             }
 
@@ -305,7 +329,13 @@ namespace WeightedRandom.forms
                 nameBox.Text = Element.Name;
                 weightBox.Text = $"{Element.Weight:F2}";
                 double percentage = viewmodel.percentages[Element.ID];
-                percentageLabel.Content = $"{percentage:F4}";
+                percentageLabel.Content = $"{percentage:P4}";
+
+                foreach (ViewModelChild child in viewModelChilds)
+                {
+                    child.UpdatePercentage();
+                    child.UpdateAll();
+                }
 
             }
 
@@ -318,6 +348,156 @@ namespace WeightedRandom.forms
 
 
             public void Clear() {
+                stackPanel.Children.Clear();
+                GuiItem.Header = null;
+                viewmodel = null;
+                Element = null;
+                foreach (ViewModelChild child in viewModelChilds)
+                {
+                    child.Clear();
+                }
+                GuiItem.Items.Clear();
+                viewModelChilds.Clear();
+
+
+            }
+        }
+
+
+        class ViewModelChild
+        {
+
+            private core2.Table table;
+            private ViewModel model;
+            private Parent parent;
+            public IDictionary<int, double> percentages;
+            private IList<ViewModelTreeNodeChild> nodes;
+            private ItemCollection displayNodes;
+            private StackPanel stackPanel;
+     
+
+
+            public ViewModelChild(ViewModel model, Parent parent, core2.Table table)
+            {
+                this.table = table;
+                nodes = new List<ViewModelTreeNodeChild>();
+                this.parent = parent;
+                this.model = model;
+
+                
+                Label label = new Label();
+                label.Content = table.Name;
+                TreeView tree = new TreeView();
+                displayNodes = tree.Items;
+
+                stackPanel = new StackPanel();
+                stackPanel.Children.Add(label);
+                stackPanel.Children.Add(tree);
+
+            }
+
+
+            private double getBasePercentage() {
+                return model.percentages[parent.ElementId];
+            }
+
+
+            public UIElement GetUIElement() 
+            {
+                return stackPanel;
+            }
+
+            public void Dispay()
+            {
+                UpdatePercentage();
+
+                foreach (Element ele in table)
+                {
+                    ViewModelTreeNodeChild node = new ViewModelTreeNodeChild(this, ele);
+                    displayNodes.Add(node.GuiItem);
+                    nodes.Add(node);
+                }
+
+                UpdateAll();
+            }
+
+            public void UpdateAll()
+            {
+                foreach (ViewModelTreeNodeChild tree in nodes)
+                {
+                    tree.UpdateSelf();
+                }
+            }
+
+
+            public void UpdatePercentage()
+            {
+                percentages = table.ComputePercentage(getBasePercentage());
+            }
+
+
+            public void Clear()
+            {
+                foreach (ViewModelTreeNodeChild tree in nodes)
+                {
+                    tree.Clear();
+                }
+            }
+        }
+
+        class ViewModelTreeNodeChild
+        {
+
+            public Element Element { get; set; }
+            public TreeViewItem GuiItem { get; }
+
+            private ViewModelChild viewmodel;
+        
+            private Label nameBox;
+            private Label weightBox;
+            private Label percentageLabel;
+            private StackPanel stackPanel;
+
+            public ViewModelTreeNodeChild(ViewModelChild viewmodel, Element element)
+            {
+                this.viewmodel = viewmodel;
+                this.Element = element;
+
+                nameBox = new Label();
+                nameBox.Margin = new Thickness(0, 5, 10, 0);
+
+                weightBox = new Label();
+                weightBox.Margin = new Thickness(0, 5, 10, 0);
+
+                percentageLabel = new Label();
+                percentageLabel.Margin = new Thickness(20, 5, 10, 0);
+
+                stackPanel = new StackPanel();
+                stackPanel.Orientation = Orientation.Horizontal;
+                stackPanel.Children.Add(nameBox);
+                stackPanel.Children.Add(weightBox);
+                stackPanel.Children.Add(percentageLabel);
+
+                GuiItem = new TreeViewItem();
+                GuiItem.Header = stackPanel;
+
+            }
+
+
+ 
+
+            public void UpdateSelf()
+            {
+
+                nameBox.Content = Element.Name;
+                weightBox.Content = $"{Element.Weight:F2}";
+                double percentage = viewmodel.percentages[Element.ID];
+                percentageLabel.Content = $"{percentage:P4}";
+
+            }
+
+            public void Clear()
+            {
                 stackPanel.Children.Clear();
                 GuiItem.Header = null;
                 viewmodel = null;

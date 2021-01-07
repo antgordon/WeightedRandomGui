@@ -24,5 +24,6 @@ namespace WeightedRandom.core2
         public string Name { set; get; }
 
         public double Weight { set; get; }
+
     }
 }

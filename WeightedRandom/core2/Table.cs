@@ -10,6 +10,12 @@ namespace WeightedRandom.core2
 
         private IList<Element> elements;
 
+        public int ID { get; }
+
+        public string Name { get; set; }
+
+        private Parent _Parent;
+
         public Table(int id, string name)
         {
             elements = new List<Element>();
@@ -17,9 +23,17 @@ namespace WeightedRandom.core2
             Name = name;
         }
 
-        public int ID { get; }
 
-        public string Name { get; set; }
+        public void SetParent(Project project, Parent parent) {
+            //Do some cycle detecting stuff
+            _Parent = parent;
+        }
+
+        public Parent GetParent()
+        {
+            return _Parent;
+        }
+
 
         public Element GetElement(string name) {
    

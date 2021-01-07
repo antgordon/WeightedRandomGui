@@ -95,9 +95,13 @@ namespace WeightedRandom
             pj3.AddElement(allocator.CreateElement(pj3, "Honda", 10.0));
 
 
-           // pj.AddReference("one", "test2");
-           // pj2.AddReference("orange", "test3");
-           // pj.AddReference("three", "test3");
+            pj2.SetParent(project, new Parent(pj.GetElement("one")));
+            pj3.SetParent(project, new Parent(pj2.GetElement("orange")));
+            pj3.SetParent(project, new Parent(pj.GetElement("three")));
+
+            // pj.AddReference("one", "test2");
+            // pj2.AddReference("orange", "test3");
+            // pj.AddReference("three", "test3");
 
             Page page = new EditPage2(project);
             mainFrame.Navigate(page);
