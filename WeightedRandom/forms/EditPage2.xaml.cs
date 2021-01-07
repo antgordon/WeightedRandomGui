@@ -194,7 +194,9 @@ namespace WeightedRandom.forms
 
        
 
-
+        /// <summary>
+        /// Represents an element in a weighted table
+        /// </summary>
         class ViewModelTreeNode
         {
 
@@ -248,9 +250,11 @@ namespace WeightedRandom.forms
 
                 viewModelChilds = new List<ViewModelChild>();
                 double percentage = viewmodel.percentages[element.ID];
+
+                //Display tables who consider the current table as a parent
+                //under the tre node
                 foreach (core2.Table table in viewmodel.project) 
                 {
-
 
                     Parent par = table.GetParent();
 
@@ -323,7 +327,9 @@ namespace WeightedRandom.forms
             }
 
 
-
+            /// <summary>
+            /// Updates the name, weight and percentage weight for this element view model
+            /// </summary>
             public void UpdateSelf() {
                
                 nameBox.Text = Element.Name;
@@ -347,6 +353,11 @@ namespace WeightedRandom.forms
             }
 
 
+
+            /// <summary>
+            /// Remove display elements from the screen
+            /// Clears references
+            /// </summary>
             public void Clear() {
                 stackPanel.Children.Clear();
                 GuiItem.Header = null;
@@ -364,6 +375,14 @@ namespace WeightedRandom.forms
         }
 
 
+        /// <summary>
+        /// Represents a table which is a child of another table
+        /// All tree nodes present in the child table are immutable
+        /// 
+        /// Includes an "X" button to remove the element from the table
+        /// A name and weight textbox
+        /// A percentage level to show percentage weight
+        /// </summary>
         class ViewModelChild
         {
 
@@ -396,17 +415,26 @@ namespace WeightedRandom.forms
 
             }
 
-
+            //Gets the percentage weight of the parent element\
+            //Is used to scale the percentage weight for tables in this display
             private double getBasePercentage() {
                 return model.percentages[parent.ElementId];
             }
 
-
+            /// <summary>
+            /// Gets the ui element to display this child view model
+            /// </summary>
+            /// <returns></returns>
             public UIElement GetUIElement() 
             {
                 return stackPanel;
             }
 
+
+            /// <summary>
+            /// Add display elements to the ui
+            /// Adds immutable child nodes
+            /// </summary>
             public void Dispay()
             {
                 UpdatePercentage();
@@ -421,6 +449,9 @@ namespace WeightedRandom.forms
                 UpdateAll();
             }
 
+            /// <summary>
+            /// Tells all nodes to update their own display
+            /// </summary>
             public void UpdateAll()
             {
                 foreach (ViewModelTreeNodeChild tree in nodes)
@@ -429,13 +460,17 @@ namespace WeightedRandom.forms
                 }
             }
 
-
+            /// <summary>
+            /// Recalculates the percentage weight for element
+            /// </summary>
             public void UpdatePercentage()
             {
                 percentages = table.ComputePercentage(getBasePercentage());
             }
 
-
+            /// <summary>
+            /// Clears references of ui elements
+            /// </summary>
             public void Clear()
             {
                 foreach (ViewModelTreeNodeChild tree in nodes)
@@ -445,6 +480,14 @@ namespace WeightedRandom.forms
             }
         }
 
+
+        /// <summary>
+        /// An immutable tree node display to display the elements in child nodes.
+        /// 
+        /// Display the table name and then the tree of elements below the name
+        /// 
+        /// 
+        /// </summary>
         class ViewModelTreeNodeChild
         {
 
@@ -485,7 +528,9 @@ namespace WeightedRandom.forms
 
 
  
-
+            /// <summary>
+            /// Updates the name, weight and percentage weight for this element view model
+            /// </summary>
             public void UpdateSelf()
             {
 
@@ -496,6 +541,10 @@ namespace WeightedRandom.forms
 
             }
 
+
+            /// <summary>
+            /// Clears references to UI elements
+            /// </summary>
             public void Clear()
             {
                 stackPanel.Children.Clear();

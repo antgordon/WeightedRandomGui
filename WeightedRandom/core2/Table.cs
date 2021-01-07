@@ -5,13 +5,26 @@ using System.Text;
 
 namespace WeightedRandom.core2
 {
+
+    /// <summary>
+    /// Stores multiple elements to compare the chance of appearence in a uniform distribution.
+    /// </summary>
     public class Table : IEnumerable<Element>
     {
 
         private IList<Element> elements;
 
+
+        /// <summary>
+        /// The unique id for this table
+        /// </summary>
         public int ID { get; }
 
+
+
+        /// <summary>
+        /// The name of this table
+        /// </summary>
         public string Name { get; set; }
 
         private Parent _Parent;
@@ -67,7 +80,12 @@ namespace WeightedRandom.core2
 
         }
 
-
+        /// <summary>
+        /// Get the weight of an element in the table with the given name.
+        /// Will throw and exeception if no element with that name exists
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public double GetWeight(string name)
         {
 
@@ -83,6 +101,13 @@ namespace WeightedRandom.core2
            
         }
 
+
+        /// <summary>
+        /// Get the weight of an element in the table with the given id.
+        /// Will throw and exeception if no element with that id exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public double GetWeight(int id)
         {
 

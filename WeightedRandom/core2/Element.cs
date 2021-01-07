@@ -5,6 +5,11 @@ using System.Windows.Automation;
 
 namespace WeightedRandom.core2
 {
+
+
+    /// <summary>
+    /// Represents a single entry in a weighted table
+    /// </summary>
     public class Element
     {
 
@@ -17,12 +22,26 @@ namespace WeightedRandom.core2
         
         }
 
+
+        /// <summary>
+        /// the unique id for this element
+        /// </summary>
         public int ID { get; }
 
+        /// <summary>
+        /// The unique id of the table this element belongs to
+        /// </summary>
         public int TableId { get; }
 
+        /// <summary>
+        /// The name of this element
+        /// </summary>
         public string Name { set; get; }
 
+
+        /// <summary>
+        /// The weight of the element
+        /// </summary>
         public double Weight { set; get; }
 
     }
