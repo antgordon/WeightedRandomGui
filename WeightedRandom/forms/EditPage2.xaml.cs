@@ -36,11 +36,7 @@ namespace WeightedRandom.forms
         private void loadSideButtons()
         {
             StackPanel stackPannel = new StackPanel();
-            Grid.SetColumn(stackPannel, 0);
-            Grid.SetRow(stackPannel, 1);
-
-            Grid grid = (Grid)this.Content;
-
+          
             foreach (core2.Table table in project)
             {
 
@@ -51,7 +47,11 @@ namespace WeightedRandom.forms
 
             }
 
-            grid.Children.Add(stackPannel);
+            tableMenu.Content = stackPannel;
+            //Grid grid = (Grid)this.Content;
+            //Grid.SetColumn(stackPannel, 0);
+            // Grid.SetRow(stackPannel, 1);
+            // grid.Children.Add(stackPannel);
 
 
 
@@ -563,7 +563,7 @@ namespace WeightedRandom.forms
             //Maybe add an audio or visual feedback that no table is was selected
 
             string name = elementName.Text;
-            double weight = 0.0;
+            double weight;
 
             if (!double.TryParse(elementWeight.Text, out weight)) {
                 return;
