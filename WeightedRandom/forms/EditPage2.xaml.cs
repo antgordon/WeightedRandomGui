@@ -554,5 +554,38 @@ namespace WeightedRandom.forms
 
             }
         }
+
+        private void onElementAddClick(object sender, RoutedEventArgs e)
+        {
+
+            if (viewModel == null)
+                return;
+            //Maybe add an audio or visual feedback that no table is was selected
+
+            string name = elementName.Text;
+            double weight = 0.0;
+
+            if (!double.TryParse(elementWeight.Text, out weight)) {
+                return;
+            }
+
+
+           
+            if (name.Length == 0) {
+                return;
+            }
+
+
+            if (weight < 0.0) {
+                return;
+            }
+
+
+            viewModel.AddElement(name, weight);
+
+
+
+
+        }
     }
 }

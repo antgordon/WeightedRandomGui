@@ -26,6 +26,11 @@
             <TreeView x:Name="projectTree">
 
             </TreeView>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBox x:Name="elementName" HorizontalAlignment="Center" Height="25"  Width="200" Margin="20,10,20,10"/>
+                <TextBox x:Name="elementWeight" HorizontalAlignment="Center" Height="25" Width="200"  Margin="20,10,20,10"/>
+                <Button x:Name="elementAddButton" HorizontalAlignment="Center" Content="Add" Click="onElementAddClick"/>
+            </StackPanel>
         </StackPanel>
         <Grid HorizontalAlignment="Left" Height="242" Margin="-20,342,0,0" Grid.Row="1" VerticalAlignment="Top" Width="108"/>
 
